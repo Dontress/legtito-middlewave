@@ -6,7 +6,6 @@ import createHttpError from 'http-errors';
 
 import session from './session';
 import { errorHandler } from '../middlewares/errorHandler';
-import passport from './passport';
 import apiRoutes from '../routes/api';
 
 const createServer = () => {
@@ -26,9 +25,6 @@ const createServer = () => {
     app.set('json spaces', 2);
 
     app.use(session);
-
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     app.use(`/${process.env.API_ROUTES_PREFIX}`, apiRoutes);
     app.get('/*', (req, res) => {

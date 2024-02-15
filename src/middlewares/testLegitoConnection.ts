@@ -1,29 +1,35 @@
 import type { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
-import jwt from 'json-web-token';
-//import createHttpError from 'http-errors';
 
-const testLegitoConnection = async (req: Request, res: Response, next: NextFunction) => {
+import crypto from 'crypto';
+
+export const testLegitoConnection = async (req: Request, res: Response, next: NextFunction) => {
     const apiKey = req.headers['api_key'];
     const privateKey = req.headers['private_key'] || 'privateKey';
 
-    const payload = {
-        iss: apiKey,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60), // Token expiration time (60 minutes from now)
-        iat: Math.floor(Date.now() / 1000) // Issued at time
+    const header = {
+        typ: "JWT",
+        alg: "HS256"
     };
 
-    const token = jwt.encode(privateKey.toString(), payload, 'HS256', (err, token) => {
-        if(err) {
-            console.error(err);
-            return res.status(500).json({ error: "Error creating JWT" });
-        }
-    });
+    const encodedHeader = base64UrlEncode(JSON.stringify(header));
+    const encodedPayload = base64UrlEncode(JSON.stringify({
+        iss: apiKey,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 3600  // JWT valid for 1 hour
+    }));
+
+    const toSign = `${encodedHeader}.${encodedPayload}`;
+
+    const rawSignature = crypto.createHmac('sha256', privateKey.toString()).update(toSign).digest();
+    const encodedSignature = base64UrlEncode(rawSignature);
+
+    const jwtToken = `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 
     try {
         await axios.get('https://emea.legito.com/api/v7/info', {
             headers: {
-                'Authorization': token,
+                'Authorization': `Bearer ${jwtToken}`
             },
         });
 
@@ -32,9 +38,19 @@ const testLegitoConnection = async (req: Request, res: Response, next: NextFunct
     } catch (err) {
         console.error('Error making GET request to Legito:', err);
         res.status(500).send('Failed to make GET request to Legito');
-        console.log(token);
     }
+
 };
+
+// Base64Url encode function
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+function base64UrlEncode(str) {
+    return Buffer.from(str).toString('base64')
+        .replace('+', '-')
+        .replace('/', '_')
+        .replace(/=+$/, '');
+}
 
 export default {
     testLegitoConnection

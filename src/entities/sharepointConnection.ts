@@ -1,16 +1,18 @@
 import {
     Column,
-    Entity,
+    Entity, OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import bcrypt from 'bcryptjs';
+
+import { LegitoConnection } from './legitoConnection';
 
 @Entity()
 export class SharepointConnection {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ nullable: false, unique: true, length: 20 })
+    @Column({ nullable: false, unique: true, length: 255 })
     tenantId!: string;
 
     @Column({ nullable: false, unique: true, length: 255 })
@@ -19,16 +21,14 @@ export class SharepointConnection {
     @Column({ nullable: false })
     hashSecret!: string;
 
-    @Column({ nullable: false })
-    salt!: string;
+    @OneToOne(() => LegitoConnection, { nullable: true, cascade: true })
+    legitoConnection!: LegitoConnection;
 
     setPassword(password: string) {
-        this.salt = bcrypt.genSaltSync(12);
-        this.hashSecret = bcrypt.hashSync(password, this.salt);
+        this.hashSecret = bcrypt.hashSync(password, 12); // Correct way to hash a password
     }
 
     verifyPassword(password: string) {
-        const hash = bcrypt.hashSync(password, this.salt);
-        return hash === this.hashSecret;
+        return bcrypt.compareSync(password, this.hashSecret); // Correct way to verify a password
     }
 }

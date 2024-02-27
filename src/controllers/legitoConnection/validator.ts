@@ -5,7 +5,7 @@ import type { legitoConnectionCreateBody } from '../../types/routes/legitoConnec
 export const validateCreateLegitoConnectionBody = (body: Partial<legitoConnectionCreateBody>) => {
     const { apiKey, privateKey, domain } = body;
 
-    if (apiKey) {
+    if (!apiKey) {
         throw createHttpError(400, 'apiKey required');
     }
 

@@ -5,7 +5,7 @@ import { AppDataSource } from '../../data-source';
 import { LegitoConnection } from '../../entities/legitoConnection';
 import { validateCreateLegitoConnectionBody } from './validator';
 
-const registerLegitoConnection = async (req: Request, res: Response) => {
+const createLegitoConnection = async (req: Request, res: Response) => {
     const { apiKey, privateKey, domain } = validateCreateLegitoConnectionBody(req.body);
 
     // Create a query runner to control the transactions, it allows to cancel the transaction if we need to
@@ -33,7 +33,7 @@ const registerLegitoConnection = async (req: Request, res: Response) => {
         // No exceptions occured, so we commit the transaction
         await queryRunner.commitTransaction();
 
-        res.send(newLegitoConnection.id);
+        res.send(newLegitoConnection);
     } catch (err) {
         // As an exception occured, cancel the transaction
         await queryRunner.rollbackTransaction();
@@ -45,10 +45,32 @@ const registerLegitoConnection = async (req: Request, res: Response) => {
 };
 
 const listLegitoConnections = async (req: Request, res: Response) => {
-    
+    const queryRunner = AppDataSource.createQueryRunner();
+
+    // Connect the query runner to the database and start the transaction
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+        const legitoConnectionRepo = queryRunner.manager.getRepository(LegitoConnection);
+        const list = await legitoConnectionRepo.find(
+            {
+                relations: ['sharepointConnection']
+            }
+        );
+        res.send(list);
+    } catch (err) {
+        // As an exception occured, cancel the transaction
+        await queryRunner.rollbackTransaction();
+        throw err;
+    } finally {
+        // We need to release the query runner to not keep a useless connection to the database
+        await queryRunner.release();
+    }
+
 };
 
 export default {
-    registerLegitoConnection,
+    createLegitoConnection,
     listLegitoConnections
 };

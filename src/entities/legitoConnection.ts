@@ -12,7 +12,7 @@ export class LegitoConnection {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ nullable: false, unique: true, length: 20 })
+    @Column({ nullable: false, unique: true, length: 255 })
     apiKey!: string;
 
     @Column({ nullable: false, unique: true, length: 255 })
@@ -21,20 +21,15 @@ export class LegitoConnection {
     @Column({ nullable: false })
     hashSecret!: string;
 
-    @Column({ nullable: false })
-    salt!: string;
-
-    @OneToOne(() => SharepointConnection)
+    @OneToOne(() => SharepointConnection, { nullable: true, cascade: true })
     @JoinColumn()
     sharepointConnection!: SharepointConnection;
 
     setSecret(password: string) {
-        this.salt = bcrypt.genSaltSync(12);
-        this.hashSecret = bcrypt.hashSync(password, this.salt);
+        this.hashSecret = bcrypt.hashSync(password, 12);
     }
 
     verifySecret(password: string) {
-        const hash = bcrypt.hashSync(password, this.salt);
-        return hash === this.hashSecret;
+        return bcrypt.compareSync(password, this.hashSecret);
     }
 }

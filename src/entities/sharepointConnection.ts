@@ -3,7 +3,6 @@ import {
     Entity, OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import bcrypt from 'bcryptjs';
 
 import { LegitoConnection } from './legitoConnection';
 
@@ -19,16 +18,8 @@ export class SharepointConnection {
     clientId!: string;
 
     @Column({ nullable: false })
-    hashSecret!: string;
+    clientSecret!: string;
 
     @OneToOne(() => LegitoConnection, { nullable: true })
     legitoConnection!: LegitoConnection;
-
-    setPassword(password: string) {
-        this.hashSecret = bcrypt.hashSync(password, 12); // Correct way to hash a password
-    }
-
-    verifyPassword(password: string) {
-        return bcrypt.compareSync(password, this.hashSecret); // Correct way to verify a password
-    }
 }

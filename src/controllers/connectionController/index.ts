@@ -43,7 +43,7 @@ const createConnection = async (req: Request, res: Response) => {
         const newSharepointConnection = new SharepointConnection();
         newSharepointConnection.clientId = clientId;
         newSharepointConnection.tenantId = tenantId;
-        newSharepointConnection.setPassword(clientSecret);
+        newSharepointConnection.clientSecret = clientSecret;
         await queryRunner.manager.save(newSharepointConnection);
 
         newLegitoConnection.sharepointConnection = newSharepointConnection;

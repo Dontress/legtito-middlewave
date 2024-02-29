@@ -4,8 +4,8 @@ import axios from 'axios';
 import crypto from 'crypto';
 
 export const testLegitoConnection = async (req: Request, res: Response, next: NextFunction) => {
-    const apiKey = req.headers['api_key'];
-    const privateKey = req.headers['private_key'] || 'privateKey';
+    const apiKey = req.body['apiKey'];
+    const privateKey = req.body['privateKey'];
 
     const header = {
         typ: "JWT",

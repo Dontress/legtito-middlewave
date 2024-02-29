@@ -3,13 +3,16 @@ import axios from 'axios';
 import qs from 'qs';
 
 export const testSharepointConnection = async (req: Request, res: Response, next: NextFunction) => {
-    const tenantId = req.headers['tenant_id'];
-    const clientId = req.headers['client_id'];
-    const clientSecret = req.headers['client_secret'];
+    const tenantId = req.body['tenantId'];
+    const clientId = req.body['clientId'];
+    const clientSecret = req.body['clientSecret'];
 
     const postData = qs.stringify({
+        // eslint-disable-next-line camelcase
         grant_type: 'client_credentials',
+        // eslint-disable-next-line camelcase
         client_id: clientId,
+        // eslint-disable-next-line camelcase
         client_secret: clientSecret,
         resource: 'https://graph.microsoft.com/'
     });

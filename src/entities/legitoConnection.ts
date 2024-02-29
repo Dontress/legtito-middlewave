@@ -21,7 +21,10 @@ export class LegitoConnection {
     @Column({ nullable: false })
     hashSecret!: string;
 
-    @OneToOne(() => SharepointConnection, { nullable: true, cascade: true })
+    @OneToOne(() => SharepointConnection, sharepointConnection => sharepointConnection.legitoConnection, {
+        cascade: true, // This enables cascading on delete
+        onDelete: "CASCADE" // Make sure the database also cascades deletes
+    })
     @JoinColumn()
     sharepointConnection!: SharepointConnection;
 

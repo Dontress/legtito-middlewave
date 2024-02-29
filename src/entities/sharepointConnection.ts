@@ -21,7 +21,7 @@ export class SharepointConnection {
     @Column({ nullable: false })
     hashSecret!: string;
 
-    @OneToOne(() => LegitoConnection, { nullable: true, cascade: true })
+    @OneToOne(() => LegitoConnection, { nullable: true })
     legitoConnection!: LegitoConnection;
 
     setPassword(password: string) {

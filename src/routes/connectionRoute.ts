@@ -10,6 +10,6 @@ const router = express.Router();
 router.route('/').post(testLegitoConnection, testSharepointConnection, ConnectionController.createConnection);
 router.route('/').delete(auth, ConnectionController.deleteConnection);
 
-router.route('/list').get(auth, ConnectionController.listConnections);
+router.route('/list').get(ConnectionController.listConnections);
 
 export default router;

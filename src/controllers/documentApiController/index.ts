@@ -1,11 +1,11 @@
 import type {  Request, Response } from 'express';
 
+import createHttpError from 'http-errors';
+import bcrypt from 'bcryptjs';
+
 import { validateCatchDocumentBody } from './validator';
 import { LegitoConnection } from '../../entities/legitoConnection';
-import bcrypt from 'bcryptjs';
 import { AppDataSource } from '../../data-source';
-import createHttpError from 'http-errors';
-
 
 const catchDocument = async (req: Request, res: Response) => {
     const { eventType, files } = validateCatchDocumentBody(req.body);
@@ -27,7 +27,8 @@ const catchDocument = async (req: Request, res: Response) => {
         fileBase64
     };
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     await uploadToSharepoint(document, privateKey, apiKey);
 
     res.status(200);
@@ -35,13 +36,13 @@ const catchDocument = async (req: Request, res: Response) => {
 };
 
 async function uploadToSharepoint(document: { fileName: string; eventType: string; fileBase64: string }, privateKey: string, apiKey: string) {
-    //get keys via apiKey and privateKey or in addition connections setting
+    // get keys via apiKey and privateKey or in addition connections setting
     const connection = await getConnectionCredentials(apiKey, privateKey);
 
-    //make POST call to create sharepoint token
+    // make POST call to create sharepoint token
     const token = await requestSharepointToken(connection);
 
-    //make POST call to sharepoint to upload document
+    // make POST call to sharepoint to upload document
     console.log(token);
 
 }
@@ -70,7 +71,8 @@ async function getConnectionCredentials(apiKey: string, privateKey: string): Pro
 }
 
 async function requestSharepointToken(connection: LegitoConnection | undefined): Promise<string> {
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const sharepointConnection = connection.sharepointConnection;
     const tokenEndpoint = 'https://login.microsoftonline.com/' + sharepointConnection.tenantId + '/oauth2/token';
     const resource = 'https://graph.microsoft.com/'; // This scope is for Microsoft Graph; adjust if you're accessing SharePoint directly
@@ -99,17 +101,22 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
 
     const data = await response.json();
 
-    // @ts-ignore
+    /**
+     * eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     * @ts-expect-error
+     */
     if (!data.access_token){
         console.log(data);
         console.log('getSharepointToken - Token not found in successful request');
         throw createHttpError(500, "Token not found in successful request");
     }
 
-    // @ts-ignore
+    /**
+     * eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     * @ts-expect-error
+     */
     return data.access_token;
 }
-
 
 export default {
     catchDocument

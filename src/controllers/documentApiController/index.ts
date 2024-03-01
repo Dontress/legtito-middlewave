@@ -1,7 +1,9 @@
-import type {  Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 import createHttpError from 'http-errors';
 import bcrypt from 'bcryptjs';
+
+import axios from 'axios';
 
 import { validateCatchDocumentBody } from './validator';
 import { LegitoConnection } from '../../entities/legitoConnection';
@@ -35,7 +37,11 @@ const catchDocument = async (req: Request, res: Response) => {
     res.send('Document uploaded');
 };
 
-async function uploadToSharepoint(document: { fileName: string; eventType: string; fileBase64: string }, privateKey: string, apiKey: string) {
+async function uploadToSharepoint(document: {
+    fileName: string;
+    eventType: string;
+    fileBase64: string;
+}, privateKey: string, apiKey: string) {
     // get keys via apiKey and privateKey or in addition connections setting
     const connection = await getConnectionCredentials(apiKey, privateKey);
 
@@ -43,7 +49,9 @@ async function uploadToSharepoint(document: { fileName: string; eventType: strin
     const token = await requestSharepointToken(connection);
 
     // make POST call to sharepoint to upload document
-    console.log(token);
+
+    const uploadResponse = await uploadDocument(document, token);
+    console.log(uploadResponse);
 
 }
 
@@ -63,10 +71,9 @@ async function getConnectionCredentials(apiKey: string, privateKey: string): Pro
 
     if (connection && bcrypt.compareSync(privateKey, connection.hashSecret)) {
         return connection; // This includes the linked SharepointConnection
-    }
-    else{
+    } else {
         console.log('findConnection - credentials not found');
-        throw createHttpError(403, "Credentials not found");
+        throw createHttpError(403, 'Credentials not found');
     }
 }
 
@@ -91,12 +98,10 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
         body: params.toString(),
     });
 
-
-
-    if (!response.ok){
+    if (!response.ok) {
         console.log(response);
         console.log('getSharepointToken - Cannot create sharepoint token with given credentials');
-        throw createHttpError(403, "Cannot create sharepoint token with given credentials");
+        throw createHttpError(403, 'Cannot create sharepoint token with given credentials');
     }
 
     const data = await response.json();
@@ -105,10 +110,10 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
      * eslint-disable-next-line @typescript-eslint/ban-ts-comment
      * @ts-expect-error
      */
-    if (!data.access_token){
+    if (!data.access_token) {
         console.log(data);
         console.log('getSharepointToken - Token not found in successful request');
-        throw createHttpError(500, "Token not found in successful request");
+        throw createHttpError(500, 'Token not found in successful request');
     }
 
     /**
@@ -116,6 +121,33 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
      * @ts-expect-error
      */
     return data.access_token;
+}
+
+async function uploadDocument(document: { fileName: string; eventType: string; fileBase64: string }, token: string) {
+    const endpoint = 'https://graph.microsoft.com/v1.0/drives/b!xRkNsEypgUmNWCc-W6wh9p_BxSAuRoxPijwNZ0-7gqCoh3hyy9C6QYW68u8OnUG1/root:/' + document.fileName + ':/content';
+
+    try {
+        // Convert base64 string to binary data
+        const fileData = Buffer.from(document.fileBase64, 'base64');
+
+        // Set up headers
+        const headers = {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/octet-stream', // Adjust if necessary
+        };
+
+        // Make the PUT request
+        const response = await axios.put(endpoint, fileData, { headers });
+
+        // Handle response
+        console.log('File uploaded successfully', response.data);
+        return response.data;
+    } catch (error) {
+        // Handle error
+        console.error('Error uploading file', error);
+        throw error;
+    }
+
 }
 
 export default {

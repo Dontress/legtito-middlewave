@@ -2,7 +2,6 @@ import express from 'express';
 
 import 'express-async-errors';
 
-
 import { testLegitoConnection } from '../middlewares/testLegitoConnection';
 import { testSharepointConnection } from '../middlewares/testSharepointConnection';
 import ConnectionRoute from './connectionRoute';

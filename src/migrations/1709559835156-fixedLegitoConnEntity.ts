@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Sh1709213868596 implements MigrationInterface {
-    name = 'Sh1709213868596'
+export class FixedLegitoConnEntity1709559835156 implements MigrationInterface {
+    name = 'FixedLegitoConnEntity1709559835156'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "sharepoint_connection" RENAME COLUMN "hashSecret" TO "clientSecret"`);

@@ -42,6 +42,7 @@ async function uploadToSharepoint(document: {
     eventType: string;
     fileBase64: string;
 }, privateKey: string, apiKey: string) {
+
     // get keys via apiKey and privateKey or in addition connections setting
     const connection = await getConnectionCredentials(apiKey, privateKey);
 
@@ -49,10 +50,8 @@ async function uploadToSharepoint(document: {
     const token = await requestSharepointToken(connection);
 
     // make POST call to sharepoint to upload document
-
     const uploadResponse = await uploadDocument(document, token);
     console.log(uploadResponse);
-
 }
 
 async function getConnectionCredentials(apiKey: string, privateKey: string): Promise<LegitoConnection | undefined> {
@@ -140,7 +139,7 @@ async function uploadDocument(document: { fileName: string; eventType: string; f
         const response = await axios.put(endpoint, fileData, { headers });
 
         // Handle response
-        console.log('File uploaded successfully', response.data);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         // Handle error

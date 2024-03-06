@@ -15,6 +15,7 @@ router.route('/test-connections').get(testSharepointConnection, testLegitoConnec
 router.route('/test-legito-connection').get(testLegitoConnection, (req, res) => res.send('Connection successful'));
 router.route('/test-sharepoint-connection').get(testSharepointConnection, (req, res) => res.send('Connection successful'));
 
+
 router.use('/connection', ConnectionRoute);
 router.use('/push-api', PushApi);
 router.use('/document', DocumentApi);

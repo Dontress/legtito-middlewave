@@ -14,6 +14,7 @@ const createPushApi = async (req: Request, res: Response, next: NextFunction) =>
 
     const token = createJwt(apiKey, privateKey);
     const url = 'https://' + domain + '/api/v7/push-connection/';
+    const targetUrl = 'https://' + process.env.DOMAIN + '/api/document';
 
     if (!process.env.DOMAIN){
         throw createHttpError(500, 'domain in .env is not set');
@@ -22,7 +23,7 @@ const createPushApi = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const response = await axios.post(url, {
             name: connectionName,
-            url: 'https://' + process.env.DOMAIN + '/api/document',
+            url: targetUrl,
             enabled: true,
             headers: [
                 {

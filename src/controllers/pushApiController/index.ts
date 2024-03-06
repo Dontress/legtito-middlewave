@@ -22,7 +22,7 @@ const createPushApi = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const response = await axios.post(url, {
             name: connectionName,
-            url: process.env.DOMAIN + '/api/document',
+            url: 'https://' + process.env.DOMAIN + '/api/document',
             enabled: true,
             headers: [
                 {

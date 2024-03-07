@@ -160,7 +160,7 @@ async function getDocumentLibraryId(token: string){
         };
 
         // this should be post
-        const response = await axios.post(endpoint, null,  { headers });
+        const response = await axios.get(endpoint, { headers });
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error

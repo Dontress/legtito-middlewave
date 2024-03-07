@@ -159,7 +159,7 @@ async function getDocumentLibraryId(token: string){
             'Content-Type': 'application/octet-stream', // Adjust if necessary
         };
 
-        const response = await axios.put(endpoint, null, { headers });
+        const response = await axios.post(endpoint,  { headers });
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error

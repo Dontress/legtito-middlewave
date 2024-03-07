@@ -37,7 +37,7 @@ export const testLegitoConnection = async (req: Request, res: Response, next: Ne
         next();
     } catch (err) {
         console.error('Error making GET request to Legito:', err);
-        res.status(500).send('Failed to make GET request to Legito');
+        res.status(500).send('Failed authenticate with Legito credentials');
     }
 
 };

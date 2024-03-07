@@ -123,7 +123,8 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
 }
 
 async function uploadDocument(document: { fileName: string; eventType: string; fileBase64: string }, token: string) {
-    const endpoint = 'https://graph.microsoft.com/v1.0/drives/b!xRkNsEypgUmNWCc-W6wh9p_BxSAuRoxPijwNZ0-7gqCoh3hyy9C6QYW68u8OnUG1/root:/' + document.fileName + ':/content';
+    const documentLibraryId = await getDocumentLibraryId(token);
+    const endpoint = 'https://graph.microsoft.com/v1.0/drives/' + documentLibraryId + '/root:/' + document.fileName + ':/content';
 
     try {
         // Convert base64 string to binary data
@@ -147,6 +148,31 @@ async function uploadDocument(document: { fileName: string; eventType: string; f
         throw error;
     }
 
+}
+
+async function getDocumentLibraryId(token: string){
+    const endpoint = 'https://graph.microsoft.com/v1.0/drives';
+
+    try {
+        const headers = {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/octet-stream', // Adjust if necessary
+        };
+
+        const response = await axios.put(endpoint, { headers });
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const documentLibraries = response.data.value.filter(d => d.driveType === 'documentLibrary');
+
+        if (documentLibraries.length > 0) {
+            return documentLibraries[0].id;
+        }
+    } catch (error) {
+        // Handle error
+        console.error('Error getting Sharepoint document library', error);
+        throw error;
+    }
 }
 
 export default {

@@ -27,7 +27,7 @@ export const testSharepointConnection = async (req: Request, res: Response, next
         next();
     } catch (err) {
         console.error('Error obtaining token from Microsoft:', err);
-        res.status(500).send('Failed to authenticate with Sharepoint MS Entra credentials');
+        res.status(403).send('Failed to authenticate with Sharepoint MS Entra credentials');
     }
 };
 

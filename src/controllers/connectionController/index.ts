@@ -24,14 +24,14 @@ const createConnection = async (req: Request, res: Response) => {
             where: { apiKey }
         });
         if (legitoConnectionExists) {
-            throw createHttpError(409, 'Connection already exists (apiKey)');
+            throw createHttpError(409, 'Connection already exists');
         }
 
         const sharepointConnectionExists = await sharepointConnRepo.exist({
             where: { tenantId }
         });
         if (sharepointConnectionExists){
-            throw createHttpError(409, 'Connection already exists (tenantId)');
+            throw createHttpError(409, 'Connection already exists');
         }
 
         const newLegitoConnection = new LegitoConnection();

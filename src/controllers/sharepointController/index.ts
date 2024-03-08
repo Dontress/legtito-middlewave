@@ -39,8 +39,13 @@ const getSites = async (req: Request, res: Response) => {
                 transformedDictionary[key] = idSegments[1]; // get the second segment
             }
         }
+
+        const sitesArray = Object.entries(transformedDictionary).map(([displayName, id]) => {
+            return { DisplayName: displayName, Id: id };
+        });
+
         res.status(200);
-        res.send(transformedDictionary);
+        res.send(sitesArray);
     } catch (error) {
         // Handle error
         console.error('Error getting sharepoint sites', error);

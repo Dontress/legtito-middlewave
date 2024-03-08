@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import type { createPushApiBody } from '../../types/routes/pushApi';
 
 export const validateCreateConnectionBody = (body: Partial<createPushApiBody>) => {
-    const { apiKey, privateKey, domain, connectionName, triggerEvent } = body;
+    const { apiKey, privateKey, domain, connectionName, triggerEvent, siteDisplayName } = body;
 
     if (!apiKey) {
         throw createHttpError(400, 'apiKey required');
@@ -23,6 +23,10 @@ export const validateCreateConnectionBody = (body: Partial<createPushApiBody>) =
 
     if (!triggerEvent) {
         throw createHttpError(400, 'triggerEvent required');
+    }
+
+    if (!siteDisplayName) {
+        throw createHttpError(400, 'siteDisplayName required');
     }
 
     // As the function checked the properties are not missing,

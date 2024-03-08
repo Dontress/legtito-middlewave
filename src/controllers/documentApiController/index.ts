@@ -14,6 +14,7 @@ const catchDocument = async (req: Request, res: Response) => {
 
     const apiKey = req.headers['apikey'];
     const privateKey = req.headers['privatekey'];
+    const siteDisplayName = req.headers['sitedisplayname'];
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -31,7 +32,7 @@ const catchDocument = async (req: Request, res: Response) => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    await uploadToSharepoint(document, privateKey, apiKey);
+    await uploadToSharepoint(document, privateKey, apiKey, siteDisplayName);
 
     res.status(200);
     res.send('Document uploaded');
@@ -41,7 +42,7 @@ async function uploadToSharepoint(document: {
     fileName: string;
     eventType: string;
     fileBase64: string;
-}, privateKey: string, apiKey: string) {
+}, privateKey: string, apiKey: string, siteDisplayName: string) {
 
     // get keys via apiKey and privateKey or in addition connections setting
     const connection = await getConnectionCredentials(apiKey, privateKey);
@@ -50,7 +51,7 @@ async function uploadToSharepoint(document: {
     const token = await requestSharepointToken(connection);
 
     // make POST call to sharepoint to upload document
-    const uploadResponse = await uploadDocument(document, token);
+    const uploadResponse = await uploadDocument(document, token, siteDisplayName);
     console.log(uploadResponse);
 }
 
@@ -122,9 +123,15 @@ async function requestSharepointToken(connection: LegitoConnection | undefined):
     return data.access_token;
 }
 
-async function uploadDocument(document: { fileName: string; eventType: string; fileBase64: string }, token: string) {
-    const documentLibraryId = await getDocumentLibraryId(token);
-    const endpoint = 'https://graph.microsoft.com/v1.0/drives/' + documentLibraryId + '/root:/' + document.fileName + ':/content';
+async function uploadDocument(document: { fileName: string; eventType: string; fileBase64: string }, token: string, siteDisplayName: string) {
+    const sites = await getSiteId(token);
+    const siteId = sites[siteDisplayName];
+
+    const documentLibraryId = await getDocumentLibraryId(token, siteId);
+
+    const endpoint = 'https://graph.microsoft.com/v1.0/sites/' + siteId + '/drives/' + documentLibraryId + '/root:/' + document.fileName + ':/content';
+
+    console.log('Endpoint where to put document: ' + endpoint);
 
     try {
         // Convert base64 string to binary data
@@ -140,7 +147,6 @@ async function uploadDocument(document: { fileName: string; eventType: string; f
         const response = await axios.put(endpoint, fileData, { headers });
 
         // Handle response
-        console.log(response.data);
         return response.data;
     } catch (error) {
         // Handle error
@@ -150,13 +156,12 @@ async function uploadDocument(document: { fileName: string; eventType: string; f
 
 }
 
-async function getDocumentLibraryId(token: string){
-    const endpoint = 'https://graph.microsoft.com/v1.0/drives';
+async function getDocumentLibraryId(token: string, siteId: string){
+    const endpoint = 'https://graph.microsoft.com/v1.0/sites/ '+ siteId + '/drives';
 
     try {
         const headers = {
             Authorization: 'Bearer ' + token,
-            'Content-Type': 'application/octet-stream', // Adjust if necessary
         };
 
         // this should be post
@@ -172,6 +177,49 @@ async function getDocumentLibraryId(token: string){
     } catch (error) {
         // Handle error
         console.error('Error getting Sharepoint document library', error);
+        throw error;
+    }
+}
+
+interface Site {
+    displayName: string;
+    id: string;
+}
+
+function isSite(object: any): object is Site {
+    return 'displayName' in object && 'id' in object;
+}
+
+async function getSiteId(token: string){
+    const endpoint = 'https://graph.microsoft.com/v1.0/sites';
+    try{
+
+        const headers = {
+            Authorization: 'Bearer ' + token,
+        };
+
+        const response = await axios.get(endpoint, { headers });
+        const sites = response.data.value;
+
+        const siteDictionary: { [displayName: string]: string } = {};
+        sites.forEach((site: unknown) => {
+            if (isSite(site)) {
+                siteDictionary[site.displayName] = site.id;
+            }
+        });
+
+        const transformedDictionary: { [key: string]: string } = {};
+        for (const [key, value] of Object.entries(siteDictionary)) {
+            const idSegments = value.split(',');
+            if (idSegments.length > 1) {
+                transformedDictionary[key] = idSegments[1]; // get the second segment
+            }
+        }
+        
+        return transformedDictionary;
+    } catch (error) {
+        // Handle error
+        console.error('Error getting sharepoint sites', error);
         throw error;
     }
 }

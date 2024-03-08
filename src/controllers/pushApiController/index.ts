@@ -10,7 +10,7 @@ import * as process from 'process';
 import { validateCreateConnectionBody } from './validator';
 
 const createPushApi = async (req: Request, res: Response, next: NextFunction) => {
-    const { apiKey, privateKey, domain, connectionName, triggerEvent } = validateCreateConnectionBody(req.body);
+    const { apiKey, privateKey, domain, connectionName, triggerEvent, siteDisplayName } = validateCreateConnectionBody(req.body);
 
     const token = createJwt(apiKey, privateKey);
     const url = 'https://' + domain + '/api/v7/push-connection/';
@@ -33,6 +33,10 @@ const createPushApi = async (req: Request, res: Response, next: NextFunction) =>
                 {
                     name: 'privateKey',
                     value: privateKey
+                },
+                {
+                    name: 'siteDisplayName',
+                    value: siteDisplayName
                 }
             ],
             eventTypes: [

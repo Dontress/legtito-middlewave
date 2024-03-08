@@ -4,4 +4,5 @@ export interface createPushApiBody {
     domain: string;
     connectionName: string;
     triggerEvent: string;
+    siteDisplayName: string;
 }

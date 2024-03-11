@@ -9,7 +9,7 @@ const getSites = async (req: Request, res: Response) => {
     const apiKey = req.headers['apikey'];
     const privateKey = req.headers['privatekey'];
 
-    console.log('keys: ' + apiKey + 'private:' + privateKey );
+    console.log('keys: ' + apiKey + ' private:' + privateKey );
     
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error

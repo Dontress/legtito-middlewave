@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 
 import createHttpError from 'http-errors';
 
-import Sharepoint from '../../Services/sharepoint';
+import Sharepoint from '../../services/sharepoint';
 
 const getSites = async (req: Request, res: Response) => {
     const apiKey = req.headers['apikey'];

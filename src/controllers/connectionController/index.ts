@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 
 import { validateCreateConnectionBody, validateDeleteConnectionBody } from './validator';
-import Connection from '../../Services/connection';
+import Connection from '../../services/connection';
 
 const createConnection = async (req: Request, res: Response) => {
     const { apiKey, privateKey, domain, tenantId, clientSecret, clientId } = validateCreateConnectionBody(req.body);

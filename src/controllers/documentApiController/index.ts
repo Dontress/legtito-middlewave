@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import { validateCatchDocumentBody } from './validator';
-import Sharepoint from '../../Services/sharepoint';
+import Sharepoint from '../../services/sharepoint';
 
 const catchDocument = async (req: Request, res: Response) => {
     const { eventType, files } = validateCatchDocumentBody(req.body);

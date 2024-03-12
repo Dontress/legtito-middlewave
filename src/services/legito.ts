@@ -5,7 +5,7 @@ import axios from 'axios';
 import Token from './token';
 
 class Legito{
-    public async createPushApi(apiKey: string, privateKey: string, domain: string, connectionName: string, triggerEvent: string, siteDisplayName: string){
+    public async createPushApi(apiKey: string, privateKey: string, domain: string, connectionName: string, triggerEvent: string[], siteDisplayName: string){
         const token = Token.createJwt(apiKey, privateKey);
         const url = 'https://' + domain + '/api/v7/push-connection/';
         const targetUrl = 'https://' + process.env.DOMAIN + '/api/document';
@@ -33,9 +33,7 @@ class Legito{
                         value: siteDisplayName
                     }
                 ],
-                eventTypes: [
-                    triggerEvent
-                ],
+                eventTypes: triggerEvent,
                 templateSuiteAll: true,
                 templateSuites: [],
                 documentRecordTypeAll: true,

@@ -29,8 +29,6 @@ export const validateCreateConnectionBody = (body: Partial<createConnectionBody>
         throw createHttpError(400, 'clientId required');
     }
 
-    // As the function checked the properties are not missing,
-    // return the body as original type
     return body as createConnectionBody;
 };
 
@@ -45,8 +43,6 @@ export const validateDeleteConnectionBody = (body: Partial<deleteConnectionBody>
         throw createHttpError(400, 'privateKey required');
     }
 
-    // As the function checked the properties are not missing,
-    // return the body as original type
     return body as createConnectionBody;
 };
 

@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 
-import type { catchDocumentBody } from '../../types/routes/documentApi';
+import type { catchDocumentBody } from '../../types/routes/document';
 
 export const validateCatchDocumentBody = (body: Partial<catchDocumentBody>) => {
     const { eventType, files } = body;

@@ -5,9 +5,9 @@ import 'express-async-errors';
 import { testLegitoConnection } from '../middlewares/testLegitoConnection';
 import { testSharepointConnection } from '../middlewares/testSharepointConnection';
 import ConnectionRoute from './connectionRoute';
-import PushApi from './pushApi';
-import DocumentApi from './documentApi';
-import SharepointApi from './sharepointApi';
+import PushApi from './pushApiRoute';
+import DocumentApi from './documentRoute';
+import SharepointApi from './sharepointRoute';
 
 const router = express.Router();
 

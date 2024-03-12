@@ -1,6 +1,6 @@
 import express from 'express';
 
-import DocumentApiController from '../controllers/documentApiController';
+import DocumentApiController from '../controllers/documentController';
 
 const router = express.Router();
 

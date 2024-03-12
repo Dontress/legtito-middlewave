@@ -29,8 +29,6 @@ export const validateCreateConnectionBody = (body: Partial<createPushApiBody>) =
         throw createHttpError(400, 'siteDisplayName required');
     }
 
-    // As the function checked the properties are not missing,
-    // return the body as original type
     return body as createPushApiBody;
 };
 

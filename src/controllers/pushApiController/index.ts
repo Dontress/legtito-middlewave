@@ -1,8 +1,9 @@
 import type { Request, Response } from 'express';
 
+import createHttpError from 'http-errors';
+
 import { validateCreateConnectionBody } from './validator';
 import Legito from '../../services/legito';
-import createHttpError from 'http-errors';
 
 const createPushApi = async (req: Request, res: Response) => {
     const { apiKey, privateKey, domain, connectionName, triggerEvent, siteDisplayName } = validateCreateConnectionBody(req.body);

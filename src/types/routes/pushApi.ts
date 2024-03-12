@@ -3,6 +3,6 @@ export interface createPushApiBody {
     privateKey: string;
     domain: string;
     connectionName: string;
-    triggerEvent: string[];
+    triggerEvent: string;
     siteDisplayName: string;
 }

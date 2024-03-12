@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import Token from './Token';
+import Token from './token';
 
 interface Site {
     displayName: string;

@@ -2,7 +2,7 @@ import process from 'process';
 import createHttpError from 'http-errors';
 import axios from 'axios';
 
-import Token from './Token';
+import Token from './token';
 
 class Legito{
     public async createPushApi(apiKey: string, privateKey: string, domain: string, connectionName: string, triggerEvent: string, siteDisplayName: string){

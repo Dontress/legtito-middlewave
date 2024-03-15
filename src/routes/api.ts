@@ -8,6 +8,7 @@ import ConnectionRoute from './connectionRoute';
 import PushApi from './pushApiRoute';
 import DocumentApi from './documentRoute';
 import SharepointApi from './sharepointRoute';
+import TokenRoute from './tokenRoute';
 
 const router = express.Router();
 
@@ -20,5 +21,8 @@ router.use('/connection', ConnectionRoute);
 router.use('/push-api', PushApi);
 router.use('/document', DocumentApi);
 router.use('/sharepoint', SharepointApi);
+
+// power automate token generation
+router.use('/token', TokenRoute);
 
 export default router;

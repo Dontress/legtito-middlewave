@@ -1,11 +1,9 @@
-import bcrypt from 'bcryptjs';
+
 import crypto from 'crypto';
 
 import createHttpError from 'http-errors';
 
-import { LegitoConnection } from '../entities/legitoConnection';
-
-import { AppDataSource } from '../data-source';
+import type { LegitoConnection } from '../entities/legitoConnection';
 
 class Token {
 
@@ -49,28 +47,6 @@ class Token {
          * @ts-expect-error
          */
         return data.access_token;
-    }
-
-    public async getConnectionCredentials(apiKey: string, privateKey: string): Promise<LegitoConnection | undefined> {
-        const queryRunner = AppDataSource.createQueryRunner();
-
-        // Connect the query runner to the database and start the transaction
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        const legitoConnectionRepository = queryRunner.manager.getRepository(LegitoConnection);
-
-        const connection = await legitoConnectionRepository.findOne({
-            where: { apiKey },
-            relations: ['sharepointConnection'],
-        });
-
-        if (connection && bcrypt.compareSync(privateKey, connection.hashSecret)) {
-            return connection; // This includes the linked SharepointConnection
-        } else {
-            console.log('findConnection - credentials not found');
-            throw createHttpError(403, 'Credentials not found');
-        }
     }
 
     public createJwt(apiKey: string, privateKey: string) {

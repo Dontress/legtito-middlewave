@@ -1,5 +1,7 @@
 import createHttpError from 'http-errors';
 
+import bcrypt from 'bcryptjs';
+
 import { AppDataSource } from '../data-source';
 import { LegitoConnection } from '../entities/legitoConnection';
 import { SharepointConnection } from '../entities/sharepointConnection';
@@ -128,6 +130,28 @@ class Connection {
         await queryRunner.startTransaction();
 
         return queryRunner;
+    }
+
+    public async getConnectionCredentials(apiKey: string, privateKey: string): Promise<LegitoConnection | undefined> {
+        const queryRunner = await Connection.getQueryRunner();
+
+        // Connect the query runner to the database and start the transaction
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        const legitoConnectionRepository = queryRunner.manager.getRepository(LegitoConnection);
+
+        const connection = await legitoConnectionRepository.findOne({
+            where: { apiKey },
+            relations: ['sharepointConnection'],
+        });
+
+        if (connection && bcrypt.compareSync(privateKey, connection.hashSecret)) {
+            return connection; // This includes the linked SharepointConnection
+        } else {
+            console.log('findConnection - credentials not found');
+            throw createHttpError(403, 'Credentials not found');
+        }
     }
 }
 

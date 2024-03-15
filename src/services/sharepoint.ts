@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import Token from './token';
+import Connection from './connection';
 
 interface Site {
     displayName: string;
@@ -17,7 +18,7 @@ class Sharepoint {
         privateKey: string, apiKey: string, siteDisplayName: string) {
 
         // get keys via apiKey and privateKey or in addition connections setting
-        const connection = await Token.getConnectionCredentials(apiKey, privateKey);
+        const connection = await Connection.getConnectionCredentials(apiKey, privateKey);
 
         // make POST call to create sharepoint token
         const token = await Token.requestSharepointToken(connection);
@@ -100,7 +101,7 @@ class Sharepoint {
     public async getSites(apiKey: string, privateKey: string) {
         const endpoint = 'https://graph.microsoft.com/v1.0/sites/';
 
-        const connection = await Token.getConnectionCredentials(apiKey, privateKey);
+        const connection = await Connection.getConnectionCredentials(apiKey, privateKey);
         const token = await Token.requestSharepointToken(connection);
 
         try {

@@ -5,7 +5,7 @@ import Connection from '../../services/connection';
 
 const createConnection = async (req: Request, res: Response) => {
     const { apiKey, privateKey, domain, tenantId, clientSecret, clientId } = validateCreateConnectionBody(req.body);
-
+    console.log(req);
     const reponse = await Connection.create(apiKey, privateKey, domain, tenantId, clientSecret, clientId);
     res.send(reponse);
 };

@@ -9,7 +9,6 @@ const generate = (req: Request, res: Response) => {
     console.log(req);
 
     const jwt = Token.createJwt(apiKey, privateKey);
-    
     res.send(jwt);
 };
 

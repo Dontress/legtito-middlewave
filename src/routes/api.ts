@@ -8,21 +8,21 @@ import ConnectionRoute from './connectionRoute';
 import PushApi from './pushApiRoute';
 import DocumentApi from './documentRoute';
 import SharepointApi from './sharepointRoute';
-import TokenRoute from './tokenRoute';
+import RedirectRoute from './RedirectRoute';
 
 const router = express.Router();
 
 router.route('/health').get((req, res) => res.send('Server is up!'));
-router.route('/test-connections').get(testSharepointConnection, testLegitoConnection, (req, res) => res.send('All connections are UP!'));
-router.route('/test-legito-connection').get(testLegitoConnection, (req, res) => res.send('Connection successful'));
-router.route('/test-sharepoint-connection').get(testSharepointConnection, (req, res) => res.send('Connection successful'));
+router.route('/sharepoint/test-connections').get(testSharepointConnection, testLegitoConnection, (req, res) => res.send('All connections are UP!'));
+router.route('/sharepoint/test-legito-connection').get(testLegitoConnection, (req, res) => res.send('Connection successful'));
+router.route('/sharepoint/test-sharepoint-connection').get(testSharepointConnection, (req, res) => res.send('Connection successful'));
 
-router.use('/connection', ConnectionRoute);
-router.use('/push-api', PushApi);
-router.use('/document', DocumentApi);
-router.use('/sharepoint', SharepointApi);
+router.use('/sharepoint/connection', ConnectionRoute);
+router.use('/sharepoint/push-api', PushApi);
+router.use('/sharepoint/document', DocumentApi);
+router.use('/sharepoint/sharepoint', SharepointApi);
 
-// power automate token generation
-router.use('/token', TokenRoute);
+// auth redirect endpoints
+router.use('/redirect', RedirectRoute);
 
 export default router;

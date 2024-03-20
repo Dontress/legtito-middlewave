@@ -10,14 +10,27 @@ const redirect = async (req: Request, res: Response) => {
     const { authorization, domain, targetendpoint, method } = validateRedirectHeaders(req.headers);
 
     const requestBody = req.body;
-    
+    const requestQuery = req.query;
+
     const { apiKey, privateKey } = BasicAuth.decodeAuthorizationHeader(authorization);
     const jwtToken = Token.createJwt( apiKey, privateKey );
 
-    const { status, data } = await Redirect.redirectRequest(domain, targetendpoint, method, jwtToken, requestBody);
+    const { status, data } = await Redirect.redirectRequest(domain, targetendpoint, method, jwtToken, requestBody, requestQuery);
+    console.log(req.headers);
+    console.log(req.body);
+    console.log(data);
 
     res.status(status);
-    res.send(data);
+
+    // if its POST request, some services don't expect response as array
+    // so if its POST parse the [{ Object }] to { Object }
+    if(method === 'POST'){
+        const parsedData = Redirect.parseArrayPostResponseToObject(data);
+        res.send(parsedData);
+    }else{
+        res.send(data);
+    }
+
 };
 
 export default {

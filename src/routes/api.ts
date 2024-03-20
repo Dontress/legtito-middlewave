@@ -25,4 +25,33 @@ router.use('/sharepoint/sharepoint', SharepointApi);
 // auth redirect endpoints
 router.use('/redirect', RedirectRoute);
 
+router.route('/dynamic-fields').get((req, res) => {
+    const dynamicFieldsStructure = {
+        'properties': {
+        'type': 'array',
+        'label': 'Properties',
+        'required': false,
+        'children': {
+            'type': 'object',
+            'properties': [
+                {
+                    'name': 'systemName',
+                    'type': 'text',
+                    'label': 'System Name',
+                    'required': true
+                },
+                {
+                    'name': 'value',
+                    'type': 'text',
+                    'label': 'Value',
+                    'required': true
+                }
+            ]
+        }
+    }
+};
+
+res.json(dynamicFieldsStructure);
+})
+;
 export default router;

@@ -1,12 +1,18 @@
 import createHttpError from 'http-errors';
 
 class Redirect {
-    public async redirectRequest(domain: string, targetEndpoint: string, method: string, jwtToken: string, requestBody: object): Promise<{ status: number; data: string }>{
-        const url = `${domain}${targetEndpoint}`;
-        console.log(method, url);
+    public async redirectRequest(domain: string, targetEndpoint: string, method: string, jwtToken: string, requestBody: object, requestQuery: object): Promise<{ status: number; data: string }>{
+        let url = `${domain}${targetEndpoint}`;
+
+        if(this.hasQueryString(requestQuery)){
+            const queryString = this.buildQueryString(requestQuery);
+            url += url.includes('?') ? '&' + queryString : '?' + queryString;
+            console.log(method, url);
+        } else {
+            console.log(method, url);
+        }
 
         let body = null;
-
         if(method !== 'GET')
             body = JSON.stringify(requestBody);
 
@@ -17,7 +23,7 @@ class Redirect {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${jwtToken}`
                 },
-                body: body
+                body: body,
             });
 
             const status: number = response.status;
@@ -28,6 +34,34 @@ class Redirect {
             console.error('Error making request:', error);
             throw createHttpError(500, 'Cannot make redirect to Legito');
         }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    private buildQueryString(params) {
+        return Object.keys(params)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+            .join('&');
+    }
+
+    private hasQueryString(queryString: object): boolean {
+        const obj = queryString;
+
+        if (obj) {
+            if (Object.keys(obj).length === 0) {
+                return false;
+            } else if (Object.prototype.hasOwnProperty.call(obj, 'content') && Object.keys(obj).length === 1) {
+                return true;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public parseArrayPostResponseToObject(data: string): object{
+        return Object.assign({}, ...data);
     }
 }
 

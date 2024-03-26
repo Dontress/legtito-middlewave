@@ -60,8 +60,12 @@ class Redirect {
         }
     }
 
-    public parseArrayPostResponseToObject(data: string): object{
-        return Object.assign({}, ...data);
+    public parseArrayPostResponseToObject(data: string): object | string {
+        try {
+            return Object.assign({}, ...data);
+        }catch (e){
+            return data;
+        }
     }
 }
 

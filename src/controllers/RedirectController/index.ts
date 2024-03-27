@@ -16,6 +16,7 @@ const redirect = async (req: Request, res: Response) => {
     const jwtToken = Token.createJwt( apiKey, privateKey );
 
     const { status, data } = await Redirect.redirectRequest(domain, targetendpoint, method, jwtToken, requestBody, requestQuery);
+
     console.log(req.headers);
     console.log(req.body);
     console.log(data);

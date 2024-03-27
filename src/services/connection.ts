@@ -13,19 +13,11 @@ class Connection {
 
         try {
             const legitoConnRepo = queryRunner.manager.getRepository(LegitoConnection);
-            const sharepointConnRepo = queryRunner.manager.getRepository(SharepointConnection);
 
             const legitoConnectionExists = await legitoConnRepo.exist({
                 where: { apiKey }
             });
             if (legitoConnectionExists) {
-                throw createHttpError(409, 'Connection already exists');
-            }
-
-            const sharepointConnectionExists = await sharepointConnRepo.exist({
-                where: { tenantId }
-            });
-            if (sharepointConnectionExists) {
                 throw createHttpError(409, 'Connection already exists');
             }
 

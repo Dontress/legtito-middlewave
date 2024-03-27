@@ -11,10 +11,10 @@ export class SharepointConnection {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ nullable: false, unique: true, length: 255 })
+    @Column({ nullable: false, unique: false, length: 255 })
     tenantId!: string;
 
-    @Column({ nullable: false, unique: true, length: 255 })
+    @Column({ nullable: false, unique: false, length: 255 })
     clientId!: string;
 
     @Column({ nullable: false })

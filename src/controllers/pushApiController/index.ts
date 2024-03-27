@@ -15,12 +15,10 @@ const createPushApi = async (req: Request, res: Response) => {
     }catch (e) {
         throw createHttpError(400, 'Invalid format of triggerEvent. Should be "trigger1,trigger2,trigger3...');
     }
+
     const response = await Legito.createPushApi(apiKey, privateKey, domain, connectionName, triggerEventArray, siteDisplayName);
 
-    if(response.status !== 200){
-        res.status(response.status);
-    }
-    res.send(response.data);
+    res.send(response);
 };
 
 export default {

@@ -12,9 +12,12 @@ const catchDocument = async (req: Request, res: Response) => {
     const privateKey = req.headers['privatekey'];
     const siteDisplayName = req.headers['sitedisplayname'];
     
-    if( typeof(apiKey) !== 'string' || typeof(privateKey) !== 'string' || typeof(siteDisplayName) !== 'string'){
+    if( typeof(apiKey) !== 'string' || typeof(privateKey) !== 'string' || typeof(siteDisplayName) !== 'string') {
         throw createHttpError(400, 'apiKey, privateKey or siteDisplayName not found in request');
     }
+
+    console.log(req.headers);
+    console.log(req.body);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -30,8 +33,8 @@ const catchDocument = async (req: Request, res: Response) => {
         fileBase64
     };
 
-    await Sharepoint.uploadToSharepoint(document, privateKey, apiKey, siteDisplayName);
-    res.send('Document uploaded');
+    const uploadResponse = await Sharepoint.uploadToSharepoint(document, privateKey, apiKey, siteDisplayName);
+    res.send(uploadResponse);
 };
 
 export default {

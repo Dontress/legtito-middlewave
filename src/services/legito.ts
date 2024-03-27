@@ -8,7 +8,7 @@ class Legito{
     public async createPushApi(apiKey: string, privateKey: string, domain: string, connectionName: string, triggerEvent: string[], siteDisplayName: string){
         const token = Token.createJwt(apiKey, privateKey);
         const url = 'https://' + domain + '/api/v7/push-connection/';
-        const targetUrl = 'https://' + process.env.DOMAIN + '/api/document';
+        const targetUrl = 'https://' + process.env.DOMAIN + '/api/sharepoint/document';
 
         if (!process.env.DOMAIN){
             throw createHttpError(500, 'domain in .env is not set');

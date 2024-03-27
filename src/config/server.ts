@@ -19,8 +19,8 @@ const createServer = () => {
 
     app.use(morgan('dev'));
     app.use(cors(corsOptions));
-    app.use(urlencoded({ limit: '20mb', extended: true }));
-    app.use(json({ limit: '20mb' }));
+    app.use(urlencoded({ limit: '100mb', extended: true }));
+    app.use(json({ limit: '100mb' }));
     app.use(helmet());
     app.set('json spaces', 2);
 

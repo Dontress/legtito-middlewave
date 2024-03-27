@@ -12,14 +12,13 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const queryRunner = AppDataSource.createQueryRunner();
 
     try {
-
         const legitoConnectionRepo = queryRunner.manager.getRepository(LegitoConnection);
-
         const legitoConnection = await legitoConnectionRepo.findOne(
             {
                 where: { apiKey }
             }
         );
+
         if (!legitoConnection) {
             throw createHttpError(403, 'Invalid credentials');
         }

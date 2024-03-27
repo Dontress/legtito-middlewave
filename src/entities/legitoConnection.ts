@@ -12,10 +12,10 @@ export class LegitoConnection {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ nullable: false, unique: true, length: 255 })
+    @Column({ nullable: false, unique: false, length: 255 })
     apiKey!: string;
 
-    @Column({ nullable: false, unique: true, length: 255 })
+    @Column({ nullable: false, unique: false, length: 255 })
     domain!: string;
 
     @Column({ nullable: false })

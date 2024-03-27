@@ -25,7 +25,7 @@ class Sharepoint {
 
         // make POST call to sharepoint to upload document
         const uploadResponse = await this.uploadDocument(document, token, siteDisplayName);
-        console.log(uploadResponse);
+        return uploadResponse;
     }
 
     private async uploadDocument(document: {

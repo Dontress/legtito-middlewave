@@ -28,7 +28,7 @@ const redirect = async (req: Request, res: Response) => {
 
     // if its POST request, some services don't expect response as array
     // so if its POST parse the [{ Object }] to { Object }
-    if (method === 'POST' || targetendpoint.includes('document-version/data/')) {
+    if (method === 'POST' || targetendpoint.includes('document-version/data/') || targetendpoint.includes('document-version/download/') ) {
         const parsedData = Redirect.parseArrayPostResponseToObject(data);
         res.send(parsedData);
     } else {

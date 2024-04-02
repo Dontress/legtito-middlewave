@@ -62,8 +62,10 @@ class Redirect {
 
     public parseArrayPostResponseToObject(data: string): object | string {
         try {
+            console.log('Converting array response to Object...');
             return Object.assign({}, ...data);
         }catch (e){
+            console.log('Cannot convert array response to Object, aborting...');
             return data;
         }
     }
